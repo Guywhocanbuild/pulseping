@@ -19,11 +19,8 @@ const getTransporter = () => {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
+    family: 4,
   });
-
-  return transporter;
-};
-
 /**
  * Sends an email. Never throws — logs and resolves so a mail-provider hiccup
  * never breaks signup/login. Callers should still `.catch` defensively.
