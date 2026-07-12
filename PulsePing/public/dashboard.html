@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard — PulsePing</title>
+<link rel="stylesheet" href="/css/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <a href="/dashboard.html" class="brand"><span class="brand-dot"></span> PulsePing</a>
+      <div class="flex-row">
+        <span class="text-sm text-muted" id="userGreeting"></span>
+        <button class="btn btn-ghost btn-sm" id="changePasswordBtn">Change password</button>
+        <button class="btn btn-ghost btn-sm" id="logoutBtn">Log out</button>
+      </div>
+    </div>
+
+    <!-- ===== Monitor list view ===== -->
+    <div id="listView">
+      <div class="spread mt-32">
+        <h2>Your monitors</h2>
+        <button class="btn btn-primary" id="addMonitorBtn">+ Add monitor</button>
+      </div>
+
+      <div class="card mt-24" id="monitorListCard" style="overflow:hidden;">
+        <div id="monitorList"></div>
+        <div class="empty-state" id="emptyState" style="display:none;">
+          <h3>No monitors yet</h3>
+          <p>Add your first API endpoint or server URL to start tracking uptime.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Monitor detail view ===== -->
+    <div id="detailView" style="display:none;">
+      <button class="btn btn-ghost btn-sm mt-32" id="backBtn">&larr; Back to monitors</button>
+
+      <div class="spread mt-24">
+        <div>
+          <div class="flex-row">
+            <span class="status-dot" id="detailStatusDot"></span>
+            <h2 id="detailName">—</h2>
+          </div>
+          <p class="mono text-sm" id="detailUrl" style="margin-top:4px;"></p>
+        </div>
+        <div class="flex-row">
+          <button class="btn btn-ghost btn-sm" id="checkNowBtn">Check now</button>
+          <button class="btn btn-danger btn-sm" id="deleteBtn">Delete</button>
+        </div>
+      </div>
+
+      <div class="feature-grid" style="grid-template-columns: repeat(4, 1fr); margin-top: 24px;">
+        <div class="card" style="padding:18px;">
+          <div class="metric-label">Status</div>
+          <div class="metric-value" id="statStatus" style="margin-top:6px;">—</div>
+        </div>
+        <div class="card" style="padding:18px;">
+          <div class="metric-label">Uptime</div>
+          <div class="metric-value" id="statUptime" style="margin-top:6px;">—</div>
+        </div>
+        <div class="card" style="padding:18px;">
+          <div class="metric-label">Last latency</div>
+          <div class="metric-value" id="statLatency" style="margin-top:6px;">—</div>
+        </div>
+        <div class="card" style="padding:18px;">
+          <div class="metric-label">Last checked</div>
+          <div class="metric-value" id="statChecked" style="margin-top:6px; font-size:13px;">—</div>
+        </div>
+      </div>
+
+      <div class="card mt-24" style="padding:20px;">
+        <div class="spread">
+          <h3 style="font-size:14px; color: var(--text-secondary);">LATENCY — LAST 50 CHECKS</h3>
+        </div>
+        <div style="height: 260px; margin-top: 12px;">
+          <canvas id="latencyChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card mt-24" style="padding: 20px;">
+        <div class="spread">
+          <h3 style="font-size:14px; color: var(--text-secondary);">PUBLIC STATUS PAGE</h3>
+          <button class="btn btn-ghost btn-sm" id="copyLinkBtn">Copy link</button>
+        </div>
+        <p class="mono text-sm mt-24" id="publicLink" style="color: var(--accent-hover);"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Add monitor modal ===== -->
+  <div class="modal-overlay" id="addModal">
+    <div class="modal">
+      <h3 style="margin-bottom:20px;">Add a monitor</h3>
+      <div class="error-banner" id="addError"></div>
+      <form id="addForm">
+        <div class="field">
+          <label for="mName">Name</label>
+          <input type="text" id="mName" placeholder="Production API" required />
+        </div>
+        <div class="field">
+          <label for="mUrl">URL</label>
+          <input type="text" id="mUrl" placeholder="https://api.yourapp.com/health" required />
+        </div>
+        <div class="field">
+          <label for="mInterval">Check every</label>
+          <select id="mInterval">
+            <option value="30">30 seconds</option>
+            <option value="60">1 minute</option>
+            <option value="300" selected>5 minutes</option>
+            <option value="600">10 minutes</option>
+            <option value="1800">30 minutes</option>
+          </select>
+        </div>
+        <div class="flex-row" style="justify-content:flex-end; margin-top: 8px;">
+          <button type="button" class="btn btn-ghost" id="cancelAddBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="addSubmitBtn">Add monitor</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== Change password modal ===== -->
+  <div class="modal-overlay" id="passwordModal">
+    <div class="modal">
+      <h3 style="margin-bottom:20px;">Change password</h3>
+      <div class="error-banner" id="passwordError"></div>
+      <div class="error-banner" id="passwordSuccess" style="background: var(--pulse-up-dim); border-color: var(--pulse-up); color: #a7f3d4;"></div>
+      <form id="passwordForm">
+        <div class="field">
+          <label for="currentPassword">Current password</label>
+          <input type="password" id="currentPassword" required autocomplete="current-password" />
+        </div>
+        <div class="field">
+          <label for="newPassword">New password</label>
+          <input type="password" id="newPassword" required minlength="6" autocomplete="new-password" />
+        </div>
+        <div class="flex-row" style="justify-content:flex-end; margin-top: 8px;">
+          <button type="button" class="btn btn-ghost" id="cancelPasswordBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="passwordSubmitBtn">Update password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

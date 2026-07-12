@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Status — PulsePing</title>
+<link rel="stylesheet" href="/css/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="container" style="max-width: 720px;">
+    <div class="topbar">
+      <a href="/" class="brand"><span class="brand-dot"></span> PulsePing</a>
+    </div>
+
+    <div id="loadingState" class="empty-state">
+      <h3>Loading status...</h3>
+    </div>
+
+    <div id="notFoundState" class="empty-state" style="display:none;">
+      <h3>Status page not found</h3>
+      <p>This monitor may have been deleted or made private.</p>
+    </div>
+
+    <div id="statusContent" style="display:none;">
+      <div class="card mt-32" style="padding: 28px;">
+        <div class="spread">
+          <div class="flex-row">
+            <span class="status-dot" id="pageStatusDot"></span>
+            <h2 id="pageName">—</h2>
+          </div>
+          <span class="badge" id="pageBadge">—</span>
+        </div>
+        <p class="text-sm mt-24" id="pageSummary"></p>
+      </div>
+
+      <div class="feature-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 20px;">
+        <div class="card" style="padding:18px;">
+          <div class="metric-label">Uptime</div>
+          <div class="metric-value" id="pageUptime" style="margin-top:6px; font-size: 20px;">—</div>
+        </div>
+        <div class="card" style="padding:18px;">
+          <div class="metric-label">Latency</div>
+          <div class="metric-value" id="pageLatency" style="margin-top:6px; font-size: 20px;">—</div>
+        </div>
+        <div class="card" style="padding:18px;">
+          <div class="metric-label">Last checked</div>
+          <div class="metric-value" id="pageChecked" style="margin-top:6px; font-size: 14px;">—</div>
+        </div>
+      </div>
+
+      <div class="card mt-24" style="padding:20px;">
+        <h3 style="font-size:14px; color: var(--text-secondary);">LATENCY HISTORY</h3>
+        <div style="height: 240px; margin-top: 12px;">
+          <canvas id="statusChart"></canvas>
+        </div>
+      </div>
+
+      <p class="text-muted text-sm" style="text-align:center; margin: 40px 0;">
+        Powered by PulsePing — refreshes automatically every 20 seconds.
+      </p>
+    </div>
+  </div>
+
+  <script src="/js/status.js"></script>
+</body>
+</html>

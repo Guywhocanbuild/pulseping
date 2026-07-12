@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PulsePing — Know the instant something goes down</title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand"><span class="brand-dot"></span> PulsePing</div>
+      <div class="flex-row">
+        <a href="/login.html" class="btn btn-ghost btn-sm">Log in</a>
+        <a href="/register.html" class="btn btn-primary btn-sm">Start monitoring</a>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-eyebrow">// uptime &amp; latency, watched for you</div>
+      <h1>Know the instant<br>something goes down.</h1>
+      <p class="lead">
+        PulsePing checks your endpoints on a real schedule, keeps a history of every
+        response, and gives you one status page you can trust — so you stop
+        refreshing your API in a browser tab at 2am.
+      </p>
+      <div class="hero-cta">
+        <a href="/register.html" class="btn btn-primary">Create free account</a>
+        <a href="/login.html" class="btn btn-ghost">I already have one</a>
+      </div>
+
+      <div class="hero-pulse">
+        <svg viewBox="0 0 640 120" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="60" x2="640" y2="60" stroke="#232c3d" stroke-width="1"/>
+          <path id="heroPulse"
+            d="M0,60 L200,60 L215,60 L225,20 L240,100 L255,60 L270,60 L280,45 L290,60 L640,60"
+            fill="none" stroke="#3ddc97" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            stroke-dasharray="900" stroke-dashoffset="900"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="feature-grid">
+      <div class="card">
+        <div class="feature-index">01 — MONITOR</div>
+        <h3>Add any endpoint</h3>
+        <p>Point PulsePing at your API, your server, or your landing page. Checks run as often as every 30 seconds.</p>
+      </div>
+      <div class="card">
+        <div class="feature-index">02 — RECORD</div>
+        <h3>Real latency history</h3>
+        <p>Every check is logged — response time, status code, and errors — so you can see degradation before it becomes downtime.</p>
+      </div>
+      <div class="card">
+        <div class="feature-index">03 — SHARE</div>
+        <h3>A status page you can send</h3>
+        <p>Every monitor gets a public status link. Drop it in your investor update or your team's Slack.</p>
+      </div>
+    </div>
+
+    <p class="text-muted text-sm" style="text-align:center; margin: 64px 0 32px;">
+      PulsePing — built for founders who need to know, not guess.
+    </p>
+  </div>
+
+  <script>
+    // Animate the hero heartbeat line in on load
+    const path = document.getElementById('heroPulse');
+    const length = path.getTotalLength();
+    path.style.strokeDasharray = length;
+    path.style.strokeDashoffset = length;
+    requestAnimationFrame(() => {
+      path.style.transition = 'stroke-dashoffset 1.8s ease-out';
+      path.style.strokeDashoffset = 0;
+    });
+  </script>
+</body>
+</html>
