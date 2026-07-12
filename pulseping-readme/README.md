@@ -4,7 +4,7 @@
 
 A full-stack uptime & latency monitor built for early-stage founders — a dark-mode web dashboard paired with a native SwiftUI iOS companion app, both talking to the same Node.js/Express backend.
 
-Built as part of the **[52 Apps Challenge](https://github.com/Guywhocanbuild)** — one shipped app per week.
+
 
 ![Node.js](https://img.shields.io/badge/Node.js-Express-3ddc97?style=flat-square&logo=node.js&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-3ddc97?style=flat-square&logo=mongodb&logoColor=white)
@@ -169,4 +169,4 @@ This started on Gmail SMTP via `nodemailer`. It worked locally and broke silentl
 ## Live
 
 - **App:** [pulseping-production.up.railway.app](https://pulseping-production.up.railway.app)
-- **Built by:** [Guywhocanbuild](https://github.com/Guywhocanbuild) — part of the 52 Apps Challenge
+- **Built by:** [Guywhocanbuild](https://github.com/Guywhocanbuild) 
