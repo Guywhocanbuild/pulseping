@@ -1,27 +1,45 @@
 const nodemailer = require('nodemailer');
+const dns = require('dns').promises;
 
 let transporter = null;
 
-// Lazily build the transporter so a missing email config doesn't crash server startup —
-// it just means emails silently no-op (logged), which is fine for local dev.
-const getTransporter = () => {
-  if (transporter) return transporter;
+// Some hosts (Railway included) resolve Gmail's SMTP hostname to an IPv6
+// address their container network can't actually route to, causing
+// ENETUNREACH. We resolve the IPv4 address ourselves and connect to it
+// directly — `tls.servername` keeps TLS certificate hostname checks correct
+// even though we're connecting via a raw IP.
+const buildTransporter = async () => {
+  const { EMAIL_HOST, EMAIL_USER, EMAIL_PASS, EMAIL_PORT } = process.env;
 
-  if (!process.env.EMAIL_HOST || !process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+  if (!EMAIL_HOST || !EMAIL_USER || !EMAIL_PASS) {
     return null;
   }
 
-  transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT) || 587,
-    secure: Number(process.env.EMAIL_PORT) === 465, // true for 465, false for 587/others
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-    family: 4,
-  });
+  let host = EMAIL_HOST;
+  try {
+    const addresses = await dns.resolve4(EMAIL_HOST);
+    if (addresses && addresses[0]) host = addresses[0];
+  } catch (err) {
+    console.warn(`[mailer] Could not resolve IPv4 for ${EMAIL_HOST}, falling back to hostname:`, err.message);
+  }
 
+  return nodemailer.createTransport({
+    host,
+    port: Number(EMAIL_PORT) || 587,
+    secure: Number(EMAIL_PORT) === 465,
+    auth: {
+      user: EMAIL_USER,
+      pass: EMAIL_PASS,
+    },
+    tls: {
+      servername: EMAIL_HOST, // keeps cert validation matching smtp.gmail.com, not the raw IP
+    },
+  });
+};
+
+const getTransporter = async () => {
+  if (transporter) return transporter;
+  transporter = await buildTransporter();
   return transporter;
 };
 
@@ -30,7 +48,7 @@ const getTransporter = () => {
  * never breaks signup/login. Callers should still `.catch` defensively.
  */
 const sendEmail = async ({ to, subject, html }) => {
-  const t = getTransporter();
+  const t = await getTransporter();
 
   if (!t) {
     console.warn(`[mailer] EMAIL_HOST/EMAIL_USER/EMAIL_PASS not set — skipping email "${subject}" to ${to}`);
