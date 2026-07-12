@@ -21,6 +21,10 @@ const getTransporter = () => {
     },
     family: 4,
   });
+
+  return transporter;
+};
+
 /**
  * Sends an email. Never throws — logs and resolves so a mail-provider hiccup
  * never breaks signup/login. Callers should still `.catch` defensively.
