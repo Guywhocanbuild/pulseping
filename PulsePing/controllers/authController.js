@@ -59,7 +59,7 @@ const loginUser = async (req, res) => {
       subject: 'New login to your PulsePing account',
       html: loginAlertEmailTemplate({
         name: user.name,
-        time: new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
+        time: new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' }),
         ipAddress,
       }),
     }).catch((e) => console.error('[loginUser] login alert email failed:', e.message));
